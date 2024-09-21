@@ -1,0 +1,14 @@
+LOAD CSV WITH HEADERS  FROM "file:///indication.csv" AS line
+MERGE (i:indication{id:line.id,name:line.name})
+LOAD CSV WITH HEADERS FROM "file:///relatein.csv" AS line
+match (from:prescription{id:line.from_id}),(to:indication{id:line.to_id})
+merge (from)-[c:cure{pro1:line.pro1,pro2:line.pro2,pro3:line.pro3,pro4:line.pro4}]->(to)
+LOAD CSV WITH HEADERS  FROM "file:///character.csv" AS line
+MERGE (ch:character{id:line.id,name:line.name})
+LOAD CSV WITH HEADERS FROM "file:///relatech.csv" AS line
+match (from:medicinalmaterials{id:line.from_id}),(to:character{id:line.to_id})
+merge (from)-[ch:character{pro1:line.pro1,pro2:line.pro2,pro4:line.pro4}]->(to)
+MATCH p=()-[r:contain]->(m:medicinalmaterials{name:"Braised licorice"}) RETURN p LIMIT 25 
+MATCH p=()-[r:character]->(m:character{name:"warm"}) RETURN p LIMIT  25 
+(3)MATCH p=()-[r:contained]->(m:prescription{name:"Magnolia Seven Objects Soup"}) RETURN p LIMIT  25 
+                       
